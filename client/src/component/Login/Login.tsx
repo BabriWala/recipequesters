@@ -24,8 +24,13 @@ const Login: React.FC = () => {
       const displayName = user.displayName;
       const photoURL = user.photoURL;
       const email = user.email;
+      const userDetails = {
+        displayName,
+        photoURL,
+        email,
+      };
       try {
-        const response = await axiosClient.post("users/register");
+        const response = await axiosClient.post("users/register", userDetails);
         console.log(response);
       } catch (err) {
         console.log(err);

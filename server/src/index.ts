@@ -22,24 +22,8 @@ connectDB();
 // Init Middleware
 app.use(express.json());
 
-// CORS configuration
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5000", // Add any other origins you want to allow
-  "http://localhost:3000", // You can add more here
-];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
-
-app.use(cors(corsOptions));
+// Enable CORS for all origins
+app.use(cors());
 
 // Define Routes
 app.use("/api/refresh-token", authRoutes);
