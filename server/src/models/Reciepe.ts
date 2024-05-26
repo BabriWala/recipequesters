@@ -1,4 +1,7 @@
 import { Schema, model, Document } from "mongoose";
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import User from "../models/User"; // Import User model if not already imported
 
 export interface IReaction {
   type: string;
@@ -21,7 +24,7 @@ export interface IRecipe extends Document {
   youtubeLink: string;
   category: string;
   watchedTimes: number;
-  viewedBy: string[]; // Array to store user IDs who viewed the recipe
+  viewedBy: { userId: string; userEmail: string; userDisplayName: string }[]; // Updated viewedBy field
 }
 
 const reactionSchema = new Schema<IReaction>({
@@ -44,12 +47,16 @@ const recipeSchema = new Schema<IRecipe>(
     purchases: { type: [purchaseSchema], default: [] },
     country: { type: String, required: true },
     youtubeLink: { type: String, required: true },
-    category: { type: String, required: true },
+    category: {
+      type: String,
+      required: true,
+      enum: ["Beef", "Chicken", "Vegetables", "Rice"],
+    },
     watchedTimes: { type: Number, default: 0 },
-    viewedBy: [{ type: Schema.Types.ObjectId, ref: "User" }], // Array of user IDs who viewed the recipe
+    viewedBy: [{ userId: String, userEmail: String, userDisplayName: String }], // Updated viewedBy field
   },
   { timestamps: true }
-); // Add timestamps option
+);
 
 const Recipe = model<IRecipe>("Recipe", recipeSchema);
 export default Recipe;

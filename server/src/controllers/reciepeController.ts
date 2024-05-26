@@ -50,6 +50,7 @@ export const createRecipe = async (req: Request, res: Response) => {
 };
 export const getRecipes = async (req: Request, res: Response) => {
   const { category, country, recipeName, page = 1, limit = 10 } = req.query;
+  console.log(req.query);
 
   try {
     let query: any = {};
@@ -67,7 +68,7 @@ export const getRecipes = async (req: Request, res: Response) => {
     }
 
     const recipes = await Recipe.find(query)
-      .select("recipeName imageUrl creatorEmail country _id")
+      .select("recipeName category imageUrl creatorEmail country _id")
       .sort({ createdAt: -1 }) // Sort by createdAt field in descending order
       .skip((+page - 1) * +limit)
       .limit(+limit);
@@ -136,19 +137,22 @@ export const getRecipeById = async (req: Request, res: Response) => {
 };
 
 export const updateRecipeReactions = async (req: Request, res: Response) => {
-  const { reactionType, action } = req.body; // Assuming 'action' indicates whether to add or remove the reaction
+  const { reactionType, action } = req.body;
 
   try {
-    // Extract the token from the request headers
     const token = req.header("Authorization")?.replace("Bearer ", "");
     if (!token) {
       return res.status(401).json({ msg: "Authorization denied" });
     }
-    // @ts-ignore
 
-    // Verify the token to get the user's display name
-    const decoded = jwt.verify(token, process.env.TOKEN);
-    const userDisplayName = decoded.user.displayName;
+    // @ts-ignore
+    const decoded: any = jwt.verify(token, process.env.TOKEN);
+    const userId = decoded.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
 
     const recipeId = req.params.id;
     let recipe: IRecipe | null = await Recipe.findById(recipeId);
@@ -162,32 +166,40 @@ export const updateRecipeReactions = async (req: Request, res: Response) => {
 
     if (action === "add") {
       if (reaction) {
-        reaction.count++;
         // @ts-ignore
 
-        if (!reaction.users.includes(userDisplayName)) {
+        if (reaction.users?.some((user) => user.userId === userId)) {
+          return res.json(recipe);
+        } else {
+          reaction.count++;
           // @ts-ignore
-
-          reaction.users.push(userDisplayName);
+          reaction.users?.push({
+            userId: user._id,
+            userDisplayName: user.displayName,
+          });
         }
       } else {
-        // @ts-ignore
-
-        reaction = { type: reactionType, count: 1, users: [userDisplayName] };
-        // @ts-ignore
-
-        recipe.reactions.push(reaction);
+        recipe.reactions.push({
+          type: reactionType,
+          count: 1,
+          // @ts-ignore
+          users: [{ userId: user._id, userDisplayName: user.displayName }],
+        });
       }
     } else if (action === "remove") {
       if (reaction) {
         reaction.count--;
         // @ts-ignore
 
-        const userIndex = reaction.users.indexOf(userDisplayName);
+        const userIndex = reaction.users?.findIndex(
+          // @ts-ignore
+
+          (user) => user.userId === userId
+        );
         if (userIndex !== -1) {
           // @ts-ignore
 
-          reaction.users.splice(userIndex, 1);
+          reaction.users?.splice(userIndex, 1);
         }
         if (reaction.count === 0) {
           recipe.reactions = recipe.reactions.filter((r) => r !== reaction);
@@ -208,30 +220,25 @@ export const updateRecipeReactions = async (req: Request, res: Response) => {
   }
 };
 
-export const addPurchase = async (req: Request, res: Response) => {
-  const { email } = req.body;
-
+export const findSimilarRecipesByCategory = async (
+  req: Request,
+  res: Response
+) => {
+  const recipeId = req.params.id;
   try {
-    const recipe = await Recipe.findById(req.params.id);
+    const recipe = await Recipe.findById(recipeId);
     if (!recipe) {
       return res.status(404).json({ msg: "Recipe not found" });
     }
 
-    recipe.purchases.push({ email, time: new Date() });
-    await recipe.save();
-    res.json(recipe);
-  } catch (err: any) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-};
+    const similarRecipes = await Recipe.find({
+      category: recipe.category,
+      _id: { $ne: recipeId },
+    })
+      .limit(5) // Limit to 5 similar recipes
+      .select("recipeName category imageUrl creatorEmail country _id");
 
-export const getSuggestedRecipes = async (req: Request, res: Response) => {
-  const { category } = req.query;
-
-  try {
-    const recipes = await Recipe.find({ category }).limit(5);
-    res.json(recipes);
+    res.json(similarRecipes);
   } catch (err: any) {
     console.error(err.message);
     res.status(500).send("Server error");

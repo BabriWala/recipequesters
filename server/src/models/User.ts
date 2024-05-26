@@ -1,11 +1,12 @@
 // src/models/User.ts
 import { Schema, model, Document } from "mongoose";
 
-interface IUser extends Document {
+export interface IUser extends Document {
   displayName: string;
   photoUrl?: string;
   email: string;
   coins: number;
+  dollar: number;
 }
 
 const userSchema = new Schema<IUser>({
@@ -13,6 +14,7 @@ const userSchema = new Schema<IUser>({
   photoUrl: { type: String },
   email: { type: String, required: true, unique: true },
   coins: { type: Number, default: 50 },
+  dollar: { type: Number, default: 100 },
 });
 
 const User = model<IUser>("User", userSchema);
