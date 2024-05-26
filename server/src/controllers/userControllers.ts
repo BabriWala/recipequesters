@@ -22,7 +22,7 @@ const generateRefreshToken = (user: IUser) => {
   return jwt.sign(payload, jwtSecret, { expiresIn: "7d" });
 };
 export const registerUser = async (req: Request, res: Response) => {
-  const { displayName, photoUrl, email } = req.body;
+  const { displayName, photoURL, email } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -39,7 +39,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     user = new User({
       displayName,
-      photoUrl,
+      photoURL,
       email,
       coins: 50,
       dollar: 100,
