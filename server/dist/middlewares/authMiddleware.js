@@ -23,3 +23,4 @@ const verifyToken = (req, res, next) => {
     }
 };
 exports.default = verifyToken;
+//# sourceMappingURL=authMiddleware.js.map

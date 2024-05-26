@@ -85,3 +85,4 @@ const statistics = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.statistics = statistics;
+//# sourceMappingURL=statisticsController.js.map

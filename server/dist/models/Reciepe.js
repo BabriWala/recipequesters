@@ -28,3 +28,4 @@ const recipeSchema = new mongoose_1.Schema({
 }, { timestamps: true });
 const Recipe = (0, mongoose_1.model)("Recipe", recipeSchema);
 exports.default = Recipe;
+//# sourceMappingURL=Reciepe.js.map

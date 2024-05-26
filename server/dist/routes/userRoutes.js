@@ -10,3 +10,4 @@ router.post("/refresh-token", userControllers_1.refreshToken);
 router.post("/buy-coins", auth_1.authMiddleware, userControllers_1.buyCoins);
 router.get("/users", userControllers_1.getAllUsers);
 exports.default = router;
+//# sourceMappingURL=userRoutes.js.map

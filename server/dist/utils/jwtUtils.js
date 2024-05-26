@@ -15,3 +15,4 @@ const verifyToken = (req) => {
     return jsonwebtoken_1.default.verify(token, process.env.TOKEN);
 };
 exports.verifyToken = verifyToken;
+//# sourceMappingURL=jwtUtils.js.map

@@ -14,3 +14,4 @@ router.get("/:id", authMiddleware_1.default, reciepeController_1.getRecipeById);
 router.put("/:id/reactions", reciepeController_1.updateRecipeReactions);
 router.get("/:id/similar", reciepeController_1.findSimilarRecipesByCategory);
 exports.default = router;
+//# sourceMappingURL=reciepeRoutes.js.map

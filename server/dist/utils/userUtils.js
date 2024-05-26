@@ -22,3 +22,4 @@ const getUserDetails = (userId) => __awaiter(void 0, void 0, void 0, function* (
     return user;
 });
 exports.getUserDetails = getUserDetails;
+//# sourceMappingURL=userUtils.js.map

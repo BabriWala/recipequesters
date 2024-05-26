@@ -58,3 +58,4 @@ const createNewRecipe = (creatorEmail, imageUrl, details, country, youtubeLink, 
     return recipe;
 });
 exports.createNewRecipe = createNewRecipe;
+//# sourceMappingURL=recipeUtils.js.map
