@@ -2,6 +2,25 @@ import { Request, Response } from "express";
 import User, { IUser } from "../models/User";
 import jwt from "jsonwebtoken";
 
+const generateAccessToken = (user: IUser) => {
+  const payload = {
+    user: {
+      id: user.id,
+    },
+  };
+  const jwtSecret = process.env.TOKEN_SECRET || "some_token";
+  return jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
+};
+
+const generateRefreshToken = (user: IUser) => {
+  const payload = {
+    user: {
+      id: user.id,
+    },
+  };
+  const jwtSecret = process.env.REFRESH_TOKEN_SECRET || "some_refresh_token";
+  return jwt.sign(payload, jwtSecret, { expiresIn: "7d" });
+};
 export const registerUser = async (req: Request, res: Response) => {
   const { displayName, photoUrl, email } = req.body;
 
@@ -9,16 +28,13 @@ export const registerUser = async (req: Request, res: Response) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      const jwtSecret = process.env.TOKEN || "some_token"; // Fallback if TOKEN is undefined
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      };
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
 
-      const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
+      user.refreshToken = refreshToken;
+      await user.save();
 
-      return res.json({ user, token });
+      return res.json({ user, accessToken, refreshToken });
     }
 
     user = new User({
@@ -31,16 +47,13 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await user.save();
 
-    const jwtSecret = process.env.TOKEN || "some_token"; // Fallback if TOKEN is undefined
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-    const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
+    user.refreshToken = refreshToken;
+    await user.save();
 
-    res.json({ user, token });
+    res.json({ user, accessToken, refreshToken });
   } catch (err: any) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -106,5 +119,35 @@ export const getAllUsers = async (): Promise<IUser[]> => {
   } catch (err: any) {
     console.error(err.message);
     throw err;
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ msg: "No refresh token provided" });
+  }
+
+  try {
+    const decoded: any = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET || "some_refresh_token"
+    );
+    const userId = decoded.user.id;
+
+    const user: IUser | null = await User.findById(userId);
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(401).json({ msg: "Invalid refresh token" });
+    }
+
+    const newAccessToken = generateAccessToken(user);
+    res.json({ accessToken: newAccessToken });
+  } catch (err: any) {
+    console.error(err.message);
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ msg: "Invalid refresh token" });
+    }
+    res.status(500).send("Server Error");
   }
 };

@@ -23,3 +23,27 @@ const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
 };
 
 export default auth;
+
+export const authMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) {
+    return res.status(401).json({ msg: "Authorization denied" });
+  }
+
+  try {
+    const decoded: any = jwt.verify(
+      token,
+      process.env.TOKEN_SECRET || "some_token"
+    );
+    // @ts-ignore
+    req?.user = decoded.user;
+    next();
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(401).json({ msg: "Invalid token" });
+  }
+};
