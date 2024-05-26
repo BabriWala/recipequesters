@@ -12,6 +12,6 @@ const router = Router();
 
 router.post("/register", registerUser);
 router.post("/buy-coins", authMiddleware, buyCoins);
-router.get("/users", getAllUsers);
+router.get("/", getAllUsers);
 
 export default router;
