@@ -3,10 +3,13 @@ import express from "express";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
 import recipeRoutes from "./routes/reciepeRoutes";
+import authRoutes from "./routes/authRoutes";
 import dotenv from "dotenv";
+import cors from "cors";
 
 // Load environment variables from .env file
 dotenv.config();
+
 console.log(process.env.PORT);
 console.log(process.env.MONGODBURI);
 
@@ -18,9 +21,28 @@ connectDB();
 // Init Middleware
 app.use(express.json());
 
+// CORS configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5000", // Add any other origins you want to allow
+  "http://localhost:3000", // You can add more here
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
+
 // Define Routes
+app.use("/api/refresh-token", authRoutes);
 app.use("/api/users", userRoutes);
-// Define Routes
 app.use("/api/recipes", recipeRoutes);
 
 // Home Route
