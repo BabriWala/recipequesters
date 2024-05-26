@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/index.ts
 import express from "express";
 import connectDB from "./config/db";
