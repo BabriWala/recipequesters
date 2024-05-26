@@ -18,12 +18,11 @@ const app = express();
 
 // Connect Database
 connectDB();
+// Enable CORS for all origins
+app.use(cors());
 
 // Init Middleware
 app.use(express.json());
-
-// Enable CORS for all origins
-app.use(cors());
 
 // Define Routes
 app.use("/api/refresh-token", authRoutes);
