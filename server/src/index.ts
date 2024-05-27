@@ -1,5 +1,4 @@
 // @ts-nocheck
-// src/index.ts
 import express from "express";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
@@ -18,8 +17,15 @@ const app = express();
 
 // Connect Database
 connectDB();
-// Enable CORS for all origins
-app.use(cors());
+
+// CORS configuration
+const corsOptions = {
+  origin: "https://recipe-questers.netlify.app",
+  optionsSuccessStatus: 200,
+};
+
+// Enable CORS with the configured options
+app.use(cors(corsOptions));
 
 // Init Middleware
 app.use(express.json());
