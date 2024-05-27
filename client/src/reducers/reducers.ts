@@ -7,7 +7,7 @@ import {
   LOGOUT_USER_SUCCESS,
 } from "../actionTypes";
 
-const userReducer = (state = null, action: any) => {
+const userReducer = (state = null, action) => {
   switch (action.type) {
     case REGISTER_USER_SUCCESS:
     case LOGIN_USER_SUCCESS:
@@ -18,7 +18,6 @@ const userReducer = (state = null, action: any) => {
       return state;
   }
 };
-
 
 // Combine all reducers into a single root reducer
 const rootReducer = combineReducers({

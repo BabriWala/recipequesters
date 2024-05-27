@@ -34,7 +34,7 @@ const AddRecipe = () => {
   const navigate = useNavigate()
 
 
-  const user = useSelector((state: any) => state.user);
+  const user = useSelector((state) => state.user);
   const queryClient = useQueryClient();
 
   const createRecipe = async ({ recipeData, token }) => {
@@ -54,14 +54,14 @@ const AddRecipe = () => {
       toast.success("recipe created successfully")
       const response = refetchedUserData(user?.accessToken)
       console.log(response)
-      saveState({ user: response?.data });
+      saveState({ user?.data });
       dispatch(loginUserSuccess(response?.data));
       navigate('/recipe')
       queryClient.invalidateQueries({ queryKey: ['recipes'] });
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data) => {
     if (user?.accessToken) {
 
       const imageformData = new FormData();
@@ -74,7 +74,7 @@ const AddRecipe = () => {
           // const formData = new FormData();
           const updatedData = {
             ...data,
-            imageUrl: response?.data?.data?.display_url,
+            imageUrl?.data?.data?.display_url,
           }
 
           mutation.mutate({ recipeData: updatedData, token: user.accessToken });

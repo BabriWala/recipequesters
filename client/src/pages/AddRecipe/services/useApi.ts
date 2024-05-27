@@ -14,7 +14,7 @@ export const useUserData = (userId: string) => {
   });
 };
 
-const createRecipe = async (recipeData: any, token: string) => {
+const createRecipe = async (recipeData, token: string) => {
   console.log(recipeData, token);
   // const { data } = await axiosClient.post("recipes", recipeData, {
   //   headers: {
@@ -28,7 +28,7 @@ const createRecipe = async (recipeData: any, token: string) => {
 export const useCreateRecipe = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    ({ recipeData, token }: { recipeData: any; token: string }) =>
+    ({ recipeData, token }: { recipeData; token: string }) =>
       createRecipe(recipeData, token),
     {
       onSuccess: () => {

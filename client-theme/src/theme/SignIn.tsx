@@ -11,7 +11,7 @@ const SignIn: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const handleSignIn = async (provider: any) => {
+    const handleSignIn = async (provider) => {
         try {
             const result = await signInWithPopup(auth, provider);
             dispatch(setUser(result.user));

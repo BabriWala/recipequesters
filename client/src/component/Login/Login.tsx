@@ -34,7 +34,7 @@ const Login: React.FC = () => {
         const response = await axiosClient.post("users/register", userDetails);
         console.log(response)
         console.log(response?.data)
-        saveState({ user: response?.data })
+        saveState({ user?.data })
         dispatch(loginUserSuccess(response?.data))
       } catch (err) {
         console.log(err);
