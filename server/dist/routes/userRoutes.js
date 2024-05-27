@@ -6,8 +6,8 @@ const userControllers_1 = require("../controllers/userControllers");
 const auth_1 = require("../middlewares/auth");
 const router = (0, express_1.Router)();
 router.post("/register", userControllers_1.registerUser);
-router.post("/refresh-token", userControllers_1.refreshToken);
 router.post("/buy-coins", auth_1.authMiddleware, userControllers_1.buyCoins);
-router.get("/users", userControllers_1.getAllUsers);
+router.get("/", userControllers_1.getAllUsers);
+router.get("/me", userControllers_1.getUserDetails);
 exports.default = router;
 //# sourceMappingURL=userRoutes.js.map

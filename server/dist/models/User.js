@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const userSchema = new mongoose_1.Schema({
     displayName: { type: String, required: true },
-    photoUrl: { type: String, required: true },
+    photoURL: { type: String },
     email: { type: String, required: true, unique: true },
     coins: { type: Number, default: 50 },
     dollar: { type: Number, default: 100 },

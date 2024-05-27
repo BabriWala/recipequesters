@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// @ts-nocheck
 // src/routes/recipeRoutes.ts
 const express_1 = require("express");
 const reciepeController_1 = require("../controllers/reciepeController");

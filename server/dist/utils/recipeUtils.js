@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createNewRecipe = exports.uploadImageToImgBB = exports.updatePurchaseData = exports.updateCoins = exports.updateRecipeViews = void 0;
+exports.createNewRecipe = exports.updatePurchaseData = exports.updateCoins = exports.updateRecipeViews = void 0;
+const Reciepe_1 = __importDefault(require("../models/Reciepe"));
 // @ts-nocheck
 const updateRecipeViews = (recipe, userId, userEmail, userDisplayName) => __awaiter(void 0, void 0, void 0, function* () {
     if (!recipe.viewedBy.includes(userId)) {
@@ -37,15 +41,9 @@ const updatePurchaseData = (recipe, userEmail) => __awaiter(void 0, void 0, void
     yield recipe.save();
 });
 exports.updatePurchaseData = updatePurchaseData;
-const uploadImageToImgBB = (imageUrl) => __awaiter(void 0, void 0, void 0, function* () {
-    const imgBBApiKey = process.env.IMGBBAPIKEY || "your_imgbb_api_key";
-    return axios.post(`https://api.imgbb.com/1/upload?key=${imgBBApiKey}`, {
-        image: imageUrl,
-    });
-});
-exports.uploadImageToImgBB = uploadImageToImgBB;
 const createNewRecipe = (creatorEmail, imageUrl, details, country, youtubeLink, recipeName, category) => __awaiter(void 0, void 0, void 0, function* () {
-    const recipe = new Recipe({
+    console.log(creatorEmail, imageUrl, details, country, youtubeLink, recipeName, category);
+    const recipe = new Reciepe_1.default({
         creatorEmail,
         imageUrl,
         details,
