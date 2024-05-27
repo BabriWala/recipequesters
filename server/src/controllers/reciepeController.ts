@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/controllers/recipeController.ts
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -16,34 +17,40 @@ import {
 import { addReaction, removeReaction } from "../utils/reactionUtils";
 
 export const createRecipe = async (req: Request, res: Response) => {
-  const { imageUrl, details, country, youtubeLink, category, recipeName } =
+  const { details, imageUrl, country, youtubeLink, category, recipeName } =
     req.body;
+  console.log(details, imageUrl, country, youtubeLink, category, recipeName);
   try {
     // Verify the token to get the user id
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.headers["authorization"]?.replace("Bearer ", "");
+    if (!token) {
+      return res.status(401).send("No token provided");
+    }
+
     const decoded = verifyToken(token);
     // @ts-ignore
     const userId = decoded?.user?.id;
+    if (!userId) {
+      return res.status(401).send("Invalid token");
+    }
 
     // Fetch user details to get the creator's email
-
     const user = await getUserDetails(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const creatorEmail = user.email;
 
-    // Upload image to ImgBB
-    const imgBBResponse = await uploadImageToImgBB(imageUrl);
-    const imgBBUrl = imgBBResponse.data.data.url;
-
-    // Create the recipe with the creator's email and ImgBB URL
-    const recipe = await createNewRecipe(
-      user.email,
-      imgBBUrl,
+    const recipe = new Recipe({
+      creatorEmail,
+      imageUrl,
       details,
       country,
       youtubeLink,
       recipeName,
-      category
-    );
-
+      category,
+    });
+    await recipe.save();
     // Update user's profile to add one coin
     await User.findByIdAndUpdate(userId, { $inc: { coins: 1 } });
 
@@ -121,7 +128,7 @@ export const updateRecipeReactions = async (req: Request, res: Response) => {
 
   try {
     // Verify token
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.headers["Authorization"]?.replace("Bearer ", "");
     if (!token) {
       return res.status(401).json({ msg: "Authorization denied" });
     }

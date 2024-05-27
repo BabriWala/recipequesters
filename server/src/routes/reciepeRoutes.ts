@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/routes/recipeRoutes.ts
 import { Router } from "express";
 import {
@@ -8,6 +9,7 @@ import {
   findSimilarRecipesByCategory,
 } from "../controllers/reciepeController";
 import verifyToken from "../middlewares/authMiddleware";
+import upload from "../middlewares/upload";
 
 const router = Router();
 

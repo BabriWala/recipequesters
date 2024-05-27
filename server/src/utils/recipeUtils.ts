@@ -1,4 +1,8 @@
 // @ts-nocheck
+import axios from "axios";
+import Recipe from "../models/Reciepe";
+
+// @ts-nocheck
 export const updateRecipeViews = async (
   recipe,
   userId,
@@ -34,13 +38,6 @@ export const updatePurchaseData = async (recipe, userEmail) => {
   await recipe.save();
 };
 
-export const uploadImageToImgBB = async (imageUrl) => {
-  const imgBBApiKey = process.env.IMGBBAPIKEY || "your_imgbb_api_key";
-  return axios.post(`https://api.imgbb.com/1/upload?key=${imgBBApiKey}`, {
-    image: imageUrl,
-  });
-};
-
 export const createNewRecipe = async (
   creatorEmail,
   imageUrl,
@@ -50,6 +47,15 @@ export const createNewRecipe = async (
   recipeName,
   category
 ) => {
+  console.log(
+    creatorEmail,
+    imageUrl,
+    details,
+    country,
+    youtubeLink,
+    recipeName,
+    category
+  );
   const recipe = new Recipe({
     creatorEmail,
     imageUrl,

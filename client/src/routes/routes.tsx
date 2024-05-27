@@ -5,6 +5,7 @@ import BuyCoin from "../pages/BuyCoin/BuyCoin";
 import AddRecipe from "../pages/AddRecipe/AddRecipe";
 import NotFound from "../pages/NotFound/NotFound";
 import Layout from "../Layout/Layout";
+import AuthChecker from "../component/AuthChecker/AuthChecker";
 
 export const router = createBrowserRouter([
   {
@@ -12,9 +13,9 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "recipe", element: <Recipe /> },
-      { path: "buy-coin", element: <BuyCoin /> },
-      { path: "add-recipe", element: <AddRecipe /> },
+      { path: "/recipe", element: <Recipe /> },
+      { path: "/buy-coin", element: <AuthChecker><BuyCoin /></AuthChecker> },
+      { path: "/add-recipe", element: <AuthChecker><AddRecipe /></AuthChecker> },
     ],
   },
   { path: "*", element: <NotFound /> },

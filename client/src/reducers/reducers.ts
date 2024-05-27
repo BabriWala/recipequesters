@@ -1,3 +1,4 @@
+// @ts-nocheck
 // reducers.ts
 import { combineReducers } from "redux";
 import {
@@ -17,6 +18,7 @@ const userReducer = (state = null, action: any) => {
       return state;
   }
 };
+
 
 // Combine all reducers into a single root reducer
 const rootReducer = combineReducers({

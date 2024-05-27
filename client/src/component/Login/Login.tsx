@@ -5,6 +5,7 @@ import app from "../../firebase/firebase";
 import { useDispatch } from "react-redux";
 import { loginUserSuccess } from "../../actions/actions";
 import axiosClient from "../../axios/axiosClient";
+import { saveState } from "../../middleware/sessionStorage";
 
 const Login: React.FC = () => {
   const auth = getAuth(app);
@@ -31,13 +32,13 @@ const Login: React.FC = () => {
       };
       try {
         const response = await axiosClient.post("users/register", userDetails);
-        console.log(response);
+        console.log(response)
+        console.log(response?.data)
+        saveState({ user: response?.data })
+        dispatch(loginUserSuccess(response?.data))
       } catch (err) {
         console.log(err);
       }
-      // IdP data available using getAdditionalUserInfo(result)
-      // dispatch(loginUserSuccess({ username: "example_user" }));
-      // ...`
     } catch (error) {
       console.log(error);
       // Handle Errors here.

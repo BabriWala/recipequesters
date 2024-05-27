@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response } from "express";
 import User, { IUser } from "../models/User";
 import jwt from "jsonwebtoken";
@@ -8,7 +9,7 @@ const generateAccessToken = (user: IUser) => {
       id: user.id,
     },
   };
-  const jwtSecret = process.env.TOKEN_SECRET || "some_token";
+  const jwtSecret = process.env.TOKEN;
   return jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
 };
 
@@ -18,11 +19,12 @@ const generateRefreshToken = (user: IUser) => {
       id: user.id,
     },
   };
-  const jwtSecret = process.env.REFRESH_TOKEN_SECRET || "some_refresh_token";
+  const jwtSecret = process.env.TOKEN;
   return jwt.sign(payload, jwtSecret, { expiresIn: "7d" });
 };
 export const registerUser = async (req: Request, res: Response) => {
   const { displayName, photoURL, email } = req.body;
+  console.log("i am here");
 
   try {
     let user = await User.findOne({ email });
@@ -60,19 +62,51 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getUserDetails = async (req: Request, res: Response) => {
+  try {
+    // Extract token from headers
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) {
+      return res.status(401).json({ msg: "Authorization denied" });
+    }
+
+    // Verify token and extract user ID
+    const decoded: any = jwt.verify(token, process.env.TOKEN);
+    const userId = decoded.user.id;
+
+    // Fetch the user from the database using the decoded user ID
+    const user: IUser | null = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Generate a new access token
+    const newAccessToken = generateAccessToken(user);
+
+    // Return the user details along with the new access token
+    res.json({ user, accessToken: newAccessToken });
+  } catch (err: any) {
+    console.error(err.message);
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ msg: "Invalid token" });
+    }
+    res.status(500).send("Server Error");
+  }
+};
+
 export const buyCoins = async (req: Request, res: Response) => {
   const { amount } = req.body;
 
   try {
     // Extract token from headers
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.headers["Authorization"]?.replace("Bearer ", "");
     if (!token) {
       return res.status(401).json({ msg: "Authorization denied" });
     }
 
     // Verify token and extract user ID
     // @ts-ignore
-    const decoded: any = jwt.verify(token, process.env.TOKEN_SECRET);
+    const decoded: any = jwt.verify(token, process.env.TOKEN);
     const userId = decoded.user.userId;
 
     // Fetch the user from the database using the decoded user ID
@@ -130,10 +164,7 @@ export const refreshToken = async (req: Request, res: Response) => {
   }
 
   try {
-    const decoded: any = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET || "some_refresh_token"
-    );
+    const decoded: any = jwt.verify(refreshToken, process.env.TOKEN);
     const userId = decoded.user.id;
 
     const user: IUser | null = await User.findById(userId);
