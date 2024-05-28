@@ -1,6 +1,6 @@
 const Recipe = require("../models/Reciepe");
+const User = require("../models/User");
 
-// @ts-nocheck
 const updateRecipeViews = async (
   recipe,
   userId,
@@ -45,15 +45,7 @@ const createNewRecipe = async (
   recipeName,
   category
 ) => {
-  console.log(
-    creatorEmail,
-    imageUrl,
-    details,
-    country,
-    youtubeLink,
-    recipeName,
-    category
-  );
+  
   const recipe = new Recipe({
     creatorEmail,
     imageUrl,

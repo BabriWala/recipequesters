@@ -1,5 +1,5 @@
-// @ts-nocheck
-// src/App.tsx
+
+// src/App.jsx
 import React from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
@@ -8,7 +8,7 @@ import store from './store/store';
 // import SignOut from './components/SignOut';
 
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Provider store={store}>
       <RouterProvider router={router}></RouterProvider>

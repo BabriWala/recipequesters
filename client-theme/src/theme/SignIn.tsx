@@ -1,4 +1,4 @@
-// src/components/SignIn.tsx
+// src/components/SignIn.jsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { auth, googleProvider, facebookProvider } from '../firebaseConfig';
 import { setUser } from '../store/authSlice';
 import { AppDispatch } from '../store/store';
 
-const SignIn: React.FC = () => {
+const SignIn = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 

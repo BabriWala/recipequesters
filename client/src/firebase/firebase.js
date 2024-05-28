@@ -1,6 +1,4 @@
-// @ts-nocheck
 import { initializeApp } from "firebase/app";
-console.log(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID);
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,

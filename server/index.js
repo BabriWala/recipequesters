@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const recipeRoutes = require("./routes/reciepeRoutes");
+const statisticsRoutes = require("./routes/statisticsRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -9,8 +10,7 @@ const cors = require("cors");
 // Load environment variables from .env file
 dotenv.config();
 
-console.log(process.env.PORT);
-console.log(process.env.MONGODBURI);
+
 
 const app = express();
 
@@ -57,6 +57,7 @@ app.use(express.json());
 app.use("/api/refresh-token", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
+app.use("/api/statistics", statisticsRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

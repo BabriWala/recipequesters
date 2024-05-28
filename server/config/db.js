@@ -7,7 +7,6 @@ const connectDB = async () => {
       throw new Error("MONGODBURI is not defined");
     }
     await mongoose.connect(process.env.MONGODBURI);
-    console.log("MongoDB connected");
   } catch (err) {
     console.error(err.message);
     process.exit(1);

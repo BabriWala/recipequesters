@@ -6,6 +6,8 @@ import AddRecipe from "../pages/AddRecipe/AddRecipe";
 import NotFound from "../pages/NotFound/NotFound";
 import Layout from "../Layout/Layout";
 import AuthChecker from "../component/AuthChecker/AuthChecker";
+import RecipeDetails from "../pages/RecipeDetails/RecipeDetails";
+import PurchaseCoin from "../pages/PurchaseCoin/PurchaseCoin";
 
 export const router = createBrowserRouter([
   {
@@ -14,8 +16,31 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/recipe", element: <Recipe /> },
-      { path: "/buy-coin", element: <AuthChecker><BuyCoin /></AuthChecker> },
-      { path: "/add-recipe", element: <AuthChecker><AddRecipe /></AuthChecker> },
+      { path: "/purchase-coin", element: <PurchaseCoin /> },
+      {
+        path: "/recipe/:id",
+        element: (
+          <AuthChecker>
+            <RecipeDetails />
+          </AuthChecker>
+        ),
+      },
+      {
+        path: "/buy-coin",
+        element: (
+          <AuthChecker>
+            <BuyCoin />
+          </AuthChecker>
+        ),
+      },
+      {
+        path: "/add-recipe",
+        element: (
+          <AuthChecker>
+            <AddRecipe />
+          </AuthChecker>
+        ),
+      },
     ],
   },
   { path: "*", element: <NotFound /> },

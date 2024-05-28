@@ -1,4 +1,4 @@
-// src/components/SignOut.tsx
+// src/components/SignOut.jsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { signOut } from 'firebase/auth';
@@ -7,7 +7,7 @@ import { setUser } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch } from '../store/store';
 
-const SignOut: React.FC = () => {
+const SignOut = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 

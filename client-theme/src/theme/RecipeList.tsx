@@ -1,10 +1,10 @@
-// src/components/RecipeList.tsx
+// src/components/RecipeList.jsx
 import React, { useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRecipes } from '../features/recipes/recipeSlice';
 import { RootState, AppDispatch } from '../app/store';
 
-const RecipeList: React.FC = () => {
+const RecipeList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { recipes, loading, error } = useSelector((state: RootState) => state.recipes);
     const observer = useRef<IntersectionObserver | null>(null);

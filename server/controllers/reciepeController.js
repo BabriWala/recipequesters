@@ -29,7 +29,7 @@ const createRecipe = async (req, res) => {
       return res.status(401).send("Invalid token");
     }
 
-    const user = await getUserDetails(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send("User not found");
     }
@@ -76,7 +76,7 @@ const getRecipes = async (req, res) => {
     }
 
     const recipes = await Recipe.find(query)
-      .select("recipeName category imageUrl creatorEmail country _id")
+      .select("recipeName category imageUrl creatorEmail purchases country _id")
       .sort({ createdAt: -1 })
       .skip((+page - 1) * +limit)
       .limit(+limit);
@@ -96,12 +96,37 @@ const getRecipeById = async (req, res) => {
       return res.status(404).json({ msg: "Recipe not found" });
     }
 
-    const tokenData = verifyToken(req);
+    const token = req.headers["authorization"]?.replace("Bearer ", "");
+    if (!token) {
+      return res.status(401).send("No token provided");
+    }
+
+    const tokenData = verifyToken(token);
     if (tokenData) {
       const { id: userId } = tokenData?.user;
-      const { email: userEmail, displayName: userDisplayName } =
-        await getUserDetails(userId);
+      const user = await User.findById(userId);
 
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+
+      const { email: userEmail, displayName: userDisplayName } = user;
+
+      // Check if the user's email is in the recipe's purchase list
+      const hasPurchased = recipe.purchases?.some(
+        (purchase) => purchase.email === userEmail
+      );
+
+      if (hasPurchased) {
+        return res.json(recipe);
+      }
+
+      // Check if recipe creator email matches user email
+      if (recipe.creatorEmail === userEmail) {
+        return res.json(recipe);
+      }
+
+      // Proceed with updates if the creator email does not match
       await updateRecipeViews(recipe, userId, userEmail, userDisplayName);
       await updateCoins(userId, userEmail, recipe.creatorEmail);
       await updatePurchaseData(recipe, userEmail);

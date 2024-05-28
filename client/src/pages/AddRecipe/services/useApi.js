@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import axiosClient from "../../../axios/axiosClient";
@@ -15,7 +15,7 @@ export const useUserData = (userId: string) => {
 };
 
 const createRecipe = async (recipeData, token: string) => {
-  console.log(recipeData, token);
+  ;
   // const { data } = await axiosClient.post("recipes", recipeData, {
   //   headers: {
   //     Authorization: `Bearer ${token}`,

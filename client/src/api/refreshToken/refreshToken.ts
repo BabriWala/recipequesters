@@ -2,7 +2,7 @@
 
 import axiosClient from "../../axios/axiosClient";
 
-const refreshToken = async (expiredRefreshToken: string) => {
+const refreshToken = async (expiredRefreshToken) => {
   // Implement logic to refresh the token
   try {
     const response = await axiosClient.post("refresh-token/", {

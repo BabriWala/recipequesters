@@ -1,4 +1,3 @@
-// @ts-nocheck
 // reducers.ts
 import { combineReducers } from "redux";
 import {

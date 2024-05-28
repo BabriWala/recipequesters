@@ -1,4 +1,4 @@
-// FirebaseProvider.tsx
+// FirebaseProvider.jsx
 import React, { createContext, useContext } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -14,7 +14,7 @@ export const useFirebase = () => {
     return firebaseInstance;
 };
 
-const FirebaseProvider: React.FC = ({ children }) => {
+const FirebaseProvider = ({ children }) => {
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }

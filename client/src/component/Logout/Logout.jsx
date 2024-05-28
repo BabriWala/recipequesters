@@ -7,9 +7,9 @@ import toast from "react-hot-toast";
 // import { auth } from "../../firebase/firebase";
 // import firebase from "firebase/app";
 
-const Logout: React.FC = () => {
+const Logout = () => {
   const auth = getAuth(app);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {

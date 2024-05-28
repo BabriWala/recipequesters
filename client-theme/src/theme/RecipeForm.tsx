@@ -1,4 +1,4 @@
-// src/components/RecipeForm.tsx
+// src/components/RecipeForm.jsx
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +8,7 @@ import axios from 'axios';
 
 type RecipeFormValues = z.infer<typeof recipeSchema>;
 
-const RecipeForm: React.FC = () => {
+const RecipeForm = () => {
     const [imageUrl, setImageUrl] = useState<string>('');
     const {
         register,
@@ -21,7 +21,7 @@ const RecipeForm: React.FC = () => {
     const onSubmit = async (data: RecipeFormValues) => {
         try {
             const response = await axios.post('/api/recipes', { ...data, imageUrl });
-            console.log(response.data);
+            ;
         } catch (error) {
             console.error(error);
         }

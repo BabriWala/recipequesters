@@ -1,4 +1,3 @@
-// @ts-nocheck
 // axiosInstance.ts
 import axios from "axios";
 import refreshToken from "../api/refreshToken/refreshToken";
@@ -11,7 +10,7 @@ const axiosClient = axios.create({
 
 const getExpiredRefreshToken = () => {
   const state = store.getState();
-  return state.auth.refreshToken; // Assuming your refresh token is stored in the auth slice of your Redux store
+  return state?.user?.user?.refreshToken; // Assuming your refresh token is stored in the auth slice of your Redux store
 };
 
 axiosClient.interceptors.response.use(
@@ -31,7 +30,9 @@ axiosClient.interceptors.response.use(
       const expiredRefreshToken = getExpiredRefreshToken();
       const newToken = await refreshToken(expiredRefreshToken);
       // Update the Authorization header with the new token
-      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+      axiosClient.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${newToken}`;
       // Retry the original request with the new token
       return axiosClient(originalRequest);
     }

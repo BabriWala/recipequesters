@@ -3,6 +3,6 @@ const { statistics } = require("../controllers/statisticsController");
 
 const router = express.Router();
 
-router.get("/statistics", statistics);
+router.get("/", statistics);
 
 module.exports = router;
