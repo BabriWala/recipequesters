@@ -6,10 +6,11 @@ import axiosClient from "../../axios/axiosClient";
 import { formatDistanceToNow } from "date-fns";
 import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { refetchedUserData } from "../../services/refetchedUserData";
 import { saveState } from "../../middleware/sessionStorage";
 import { loginUserSuccess } from "../../actions/actions";
+import toast from "react-hot-toast";
 
 const getYouTubeEmbedUrl = (url) => {
   const videoId = url?.split("v=")[1];
@@ -93,6 +94,43 @@ const RecipeDetails = () => {
       fetchRecipes();
     } catch (err) {}
   };
+
+  const navigate = useNavigate();
+  const viewDetails = (recipe) => {
+    if (!user?.user?.email) {
+      toast.error("You have to logged in for viewing Details, Pleasle login");
+      return null;
+    }
+    if (recipe.creatorEmail == user?.user.email) {
+      navigate(`/recipe/${recipe._id}`);
+      return null;
+    }
+    if (
+      recipe.purchases &&
+      recipe.purchases.length > 0 &&
+      recipe.purchases.map((it) => it.email).includes(user?.user?.email)
+    ) {
+      navigate(`/recipe/${recipe._id}`);
+      return null;
+    }
+
+    if (Number(user?.user?.coins) < 10) {
+      toast("You Have not Enough Coins For Viewing This Recpie Buy Coins");
+      navigate("/purchase-coin");
+      return null;
+    }
+
+    if (Number(user?.user?.coins) >= 10) {
+      const confirmed = window.confirm(
+        "Your sure you want to see the details then 10 coins will be cutted"
+      );
+      if (confirmed) {
+        navigate(`/recipe/${recipe._id}`);
+        return;
+      }
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto py-10">
