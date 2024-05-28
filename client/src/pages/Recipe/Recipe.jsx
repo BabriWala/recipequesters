@@ -77,11 +77,11 @@ const Recipe = () => {
 
     if (Number(user?.user?.coins) < 10) {
       toast("You Have not Enough Coins For Viewing This Recpie Buy Coins");
-      navigate("/purchase-coins");
+      navigate("/purchase-coin");
       return null;
     }
 
-    if (Number(user?.user?.coins) > 10) {
+    if (Number(user?.user?.coins) >= 10) {
       const confirmed = window.confirm(
         "Your sure you want to see the details then 10 coins will be cutted"
       );

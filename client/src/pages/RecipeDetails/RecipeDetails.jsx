@@ -70,7 +70,7 @@ const RecipeDetails = () => {
     }));
   }, [recipe]);
 
-  const [likes, setLikes] = useState(recipe?.reactions?.length);
+  // const [likes, setLikes] = useState(recipe?.reactions?.length);
   const [liked, setLiked] = useState(false);
   console.log(recipe);
   const handleLike = async () => {
@@ -90,9 +90,8 @@ const RecipeDetails = () => {
     };
     try {
       const response = await axiosClient.put(`recipes/${id}/reactions`, data);
-    } catch (err) {
       fetchRecipes();
-    }
+    } catch (err) {}
   };
   return (
     <>
@@ -136,13 +135,25 @@ const RecipeDetails = () => {
                   </li>
                 ))}
             </ul>
+            <p className="text-gray-600 flex items-center gap-2">
+              <span>{recipe.details}</span>
+            </p>
             <button
               onClick={handleLike}
               className={`mt-4 px-4 py-2 ${
                 liked ? "bg-red-500" : "bg-blue-500"
               } text-white rounded-lg`}
             >
-              {liked ? "Unlike" : "Like"} <span>{likes}</span>
+              {recipe?.reactions?.length > 0 &&
+              recipe.reactions &&
+              recipe.reactions
+                .map((it) => {
+                  return it.userId;
+                })
+                .includes(user.user._id)
+                ? "Unlike"
+                : "Like"}{" "}
+              <span>{recipe?.reactions?.length}</span>
             </button>
             <div className="mt-4">
               <iframe
