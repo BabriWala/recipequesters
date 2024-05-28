@@ -77,7 +77,7 @@ const Recipe = () => {
 
     if (Number(user?.user?.coins) < 10) {
       toast("You Have not Enough Coins For Viewing This Recpie Buy Coins");
-      navigate("/buy-coins");
+      navigate("/purchase-coins");
       return null;
     }
 

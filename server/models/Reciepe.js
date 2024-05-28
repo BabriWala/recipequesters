@@ -5,8 +5,8 @@ const User = require("./User"); // Import User model if not already imported
 const { Schema, model } = mongoose;
 
 const reactionSchema = new Schema({
-  type: { type: String },
-  count: { type: Number, default: 0 },
+  userId: { type: Schema.Types.ObjectId, ref: "User" }, // User ID
+  reactionType: { type: String }, // Reaction type
 });
 
 const purchaseSchema = new Schema({

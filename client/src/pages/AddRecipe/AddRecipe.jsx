@@ -43,11 +43,7 @@ const AddRecipe = () => {
   const queryClient = useQueryClient();
 
   const createRecipe = async ({ recipeData, token }) => {
-    const { data } = await axiosClient.post("recipes/", recipeData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const { data } = await axiosClient.post("recipes/", recipeData);
     return data;
   };
 
@@ -190,7 +186,7 @@ const AddRecipe = () => {
             mutation.isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-700"
           } text-white font-bold focus:outline-none focus:shadow-outline`}
         >
-          {mutation.isLoading ? "Creating..." : "Create Recipe"}
+          {mutation.isPending ? "Creating..." : "Create Recipe"}
         </button>
         {mutation.isError && (
           <p className="text-red-500 text-xs italic mt-4">

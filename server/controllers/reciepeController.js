@@ -143,14 +143,12 @@ const updateRecipeReactions = async (req, res) => {
   const { reactionType, action } = req.body;
 
   try {
-    const token = req.headers["Authorization"]?.replace("Bearer ", "");
+    const token = req.headers["authorization"]?.replace("Bearer ", "");
     if (!token) {
       return res.status(401).json({ msg: "Authorization denied" });
     }
     const decoded = verifyToken(token);
-    const userId = decoded.user.userId;
-
-    const user = await getUserDetails(userId);
+    const { id: userId } = decoded?.user;
 
     const recipeId = req.params.id;
     let recipe = await Recipe.findById(recipeId);
@@ -158,10 +156,21 @@ const updateRecipeReactions = async (req, res) => {
       return res.status(404).json({ msg: "Recipe not found" });
     }
 
+    // Find the index of user's reaction in the recipe's reactions array
+    const userReactionIndex = recipe.reactions.findIndex(
+      (reaction) => reaction?.userId?.toString() === userId
+    );
+
     if (action === "add") {
-      addReaction(recipe, user, reactionType);
+      // If user has not already reacted, add the reaction
+      if (userReactionIndex === -1) {
+        recipe.reactions.push({ userId, reactionType });
+      }
     } else if (action === "remove") {
-      removeReaction(recipe, userId, reactionType);
+      // If user has reacted, remove the reaction
+      if (userReactionIndex !== -1) {
+        recipe.reactions.splice(userReactionIndex, 1);
+      }
     } else {
       return res.status(400).json({ msg: "Invalid action" });
     }
